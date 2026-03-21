@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>openSIA • Нейросеть будущего</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 3D Канвас фон -->
+    <canvas id="bgCanvas"></canvas>
+    
+    <!-- Анимированный градиентный фон -->
+    <div class="gradient-bg"></div>
+
+    <!-- Прелоадер с анимацией -->
+    <div class="preloader">
+        <div class="preloader-content">
+            <div class="preloader-ring"></div>
+            <div class="preloader-text">openSIA</div>
+            <div class="preloader-dots">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Кастомный курсор -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- Главный контейнер -->
+    <div class="app">
+        <!-- Сайдбар с неоновым эффектом -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-3d">
+                    <span class="logo-icon">🧠</span>
+                    <span class="logo-text">openSIA</span>
+                </div>
+                <div class="logo-badge">PREMIUM</div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#home" class="nav-item active">
+                    <div class="nav-icon">🏠</div>
+                    <div class="nav-text">Главная</div>
+                    <div class="nav-glow"></div>
+                </a>
+                <a href="#about" class="nav-item">
+                    <div class="nav-icon">🤖</div>
+                    <div class="nav-text">Нейросеть</div>
+                    <div class="nav-glow"></div>
+                </a>
+                <a href="#features" class="nav-item">
+                    <div class="nav-icon">⚡</div>
+                    <div class="nav-text">Возможности</div>
+                    <div class="nav-glow"></div>
+                </a>
+                <a href="#timer" class="nav-item">
+                    <div class="nav-icon">⏱️</div>
+                    <div class="nav-text">До запуска</div>
+                    <div class="nav-glow"></div>
+                </a>
+                <a href="#waitlist" class="nav-item">
+                    <div class="nav-icon">✉️</div>
+                    <div class="nav-text">Лист ожидания</div>
+                    <div class="nav-glow"></div>
+                </a>
+                <a href="#contact" class="nav-item">
+                    <div class="nav-icon">📧</div>
+                    <div class="nav-text">Контакты</div>
+                    <div class="nav-glow"></div>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="theme-switcher">
+                    <button class="theme-btn" data-theme="dark">🌙</button>
+                    <button class="theme-btn" data-theme="light">☀️</button>
+                    <button class="theme-btn" data-theme="purple">💜</button>
+                </div>
+                <div class="social-links">
+                    <a href="mailto:openchatsia@gmail.com" class="social-link">📧</a>
+                    <a href="#" class="social-link" id="showQRBtn">📱</a>
+                    <a href="#" class="social-link">💬</a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Основной контент -->
+        <main class="main">
+            <!-- HERO СЕКЦИЯ -->
+            <section id="home" class="hero">
+                <div class="hero-bg-particles"></div>
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <span class="badge-pulse">🚀 СКОРО</span>
+                    </div>
+                    <h1 class="hero-title">
+                        <span class="title-small">Нейросеть нового поколения</span>
+                        <span class="title-big">open<span class="gradient">SIA</span></span>
+                    </h1>
+                    <p class="hero-desc">
+                        Искусственный интеллект, который понимает эмоции,<br>
+                        помогает учиться и общается как человек.
+                    </p>
+                    
+                    <!-- 3D ТАЙМЕР -->
+                    <div class="timer-3d" id="timer">
+                        <div class="timer-card">
+                            <div class="timer-number" id="days">00</div>
+                            <div class="timer-label">Дней</div>
+                        </div>
+                        <div class="timer-sep">:</div>
+                        <div class="timer-card">
+                            <div class="timer-number" id="hours">00</div>
+                            <div class="timer-label">Часов</div>
+                        </div>
+                        <div class="timer-sep">:</div>
+                        <div class="timer-card">
+                            <div class="timer-number" id="minutes">00</div>
+                            <div class="timer-label">Минут</div>
+                        </div>
+                        <div class="timer-sep">:</div>
+                        <div class="timer-card">
+                            <div class="timer-number" id="seconds">00</div>
+                            <div class="timer-label">Секунд</div>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary btn-3d" id="notifyBtn">
+                            <span class="btn-text">🔔 Напомнить</span>
+                            <span class="btn-glow"></span>
+                        </button>
+                        <button class="btn btn-outline" id="learnBtn">
+                            <span>🤔 Что это?</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="hero-scroll">
+                    <span>Листай вниз</span>
+                    <div class="scroll-wheel"></div>
+                </div>
+            </section>
+
+            <!-- ЧТО ТАКОЕ НЕЙРОСЕТЬ -->
+            <section id="about" class="about">
+                <div class="container">
+                    <div class="section-header">
+                        <span class="section-tag">🤖 Простыми словами</span>
+                        <h2 class="section-title">Что такое <span class="gradient">нейросеть</span>?</h2>
+                    </div>
+                    
+                    <div class="about-grid">
+                        <div class="about-card glass">
+                            <div class="card-3d-icon">🧠</div>
+                            <h3>Это программа, которая учится</h3>
+                            <p>Нейросеть анализирует миллионы примеров и начинает понимать закономерности. Как человек, только в тысячу раз быстрее.</p>
+                        </div>
+                        <div class="about-card glass">
+                            <div class="card-3d-icon">💬</div>
+                            <h3>Понимает эмоции</h3>
+                            <p>openSIA чувствует настроение по тексту — грустно тебе или весело. И отвечает с душой.</p>
+                        </div>
+                        <div class="about-card glass">
+                            <div class="card-3d-icon">⚡</div>
+                            <h3>Работает мгновенно</h3>
+                            <p>Ответ приходит за доли секунды. Без задержек, без лагов. Просто открываешь и общаешься.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ВОЗМОЖНОСТИ -->
+            <section id="features" class="features">
+                <div class="container">
+                    <div class="section-header">
+                        <span class="section-tag">⚡ Мега-возможности</span>
+                        <h2 class="section-title">Что умеет <span class="gradient">openSIA</span></h2>
+                    </div>
+                    
+                    <div class="features-grid">
+                        <div class="feature-item">
+                            <div class="feature-icon">💬</div>
+                            <h3>Живое общение</h3>
+                            <p>Шутит, поддерживает, понимает контекст. Как лучший друг, только в телефоне.</p>
+                            <div class="feature-badge">🔥 Популярно</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">🔍</div>
+                            <h3>Умный поиск</h3>
+                            <p>Яндекс, Google, Википедия — всё в одном окне. Находит ответ за секунды.</p>
+                            <div class="feature-badge">⚡ 0.3 сек</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">💻</div>
+                            <h3>Помощь в коде</h3>
+                            <p>Пишет на Python, JS, C++. Объясняет, исправляет, документирует.</p>
+                            <div class="feature-badge">🧑‍💻 50+ языков</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">🎨</div>
+                            <h3>Генерация картинок</h3>
+                            <p>Опиши словами — получи шедевр. DALL-E, Midjourney стиль.</p>
+                            <div class="feature-badge">🎨 4K качество</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">🌐</div>
+                            <h3>50+ языков</h3>
+                            <p>Перевод, изучение, практика. Русский, English, 日本語, Español и другие.</p>
+                            <div class="feature-badge">🌍 Без границ</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">🎵</div>
+                            <h3>Музыка и звук</h3>
+                            <p>Создаёт треки, озвучивает текст, делает ремиксы. Твой личный композитор.</p>
+                            <div class="feature-badge">🎧 Студия в кармане</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ТАЙМЕР СЕКЦИЯ (3D) -->
+            <section id="timer" class="timer-section">
+                <div class="timer-bg"></div>
+                <div class="container">
+                    <div class="section-header">
+                        <span class="section-tag">⏱️ Осталось всего</span>
+                        <h2 class="section-title">До запуска <span class="gradient">openSIA</span></h2>
+                    </div>
+                    
+                    <div class="timer-3d-big" id="timerBig">
+                        <div class="timer-unit">
+                            <div class="timer-unit-number" id="bigDays">00</div>
+                            <div class="timer-unit-label">Дней</div>
+                        </div>
+                        <div class="timer-unit">
+                            <div class="timer-unit-number" id="bigHours">00</div>
+                            <div class="timer-unit-label">Часов</div>
+                        </div>
+                        <div class="timer-unit">
+                            <div class="timer-unit-number" id="bigMinutes">00</div>
+                            <div class="timer-unit-label">Минут</div>
+                        </div>
+                        <div class="timer-unit">
+                            <div class="timer-unit-number" id="bigSeconds">00</div>
+                            <div class="timer-unit-label">Секунд</div>
+                        </div>
+                    </div>
+                    
+                    <div class="timer-progress">
+                        <div class="progress-bar" id="progressBar"></div>
+                        <div class="progress-text">Прогресс запуска</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ЛИСТ ОЖИДАНИЯ -->
+            <section id="waitlist" class="waitlist">
+                <div class="waitlist-glow"></div>
+                <div class="container">
+                    <div class="waitlist-card glass">
+                        <h2 class="waitlist-title">Будь <span class="gradient">первым</span></h2>
+                        <p class="waitlist-desc">Оставь email — мы пришлём уведомление в день запуска</p>
+                        
+                        <form class="waitlist-form" id="waitlistForm">
+                            <div class="input-group">
+                                <input type="email" id="waitlistEmail" placeholder="Твой email" required>
+                                <button type="submit" class="btn-submit">🔔 Напомнить</button>
+                            </div>
+                        </form>
+                        
+                        <div class="waitlist-stats">
+                            <div class="stat">
+                                <span class="stat-number" id="subscriberCount">0</span>
+                                <span class="stat-label">уже в листе</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-number">7</span>
+                                <span class="stat-label">дней до запуска</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- КОНТАКТЫ И QR КОД -->
+            <section id="contact" class="contact-section">
+                <div class="container">
+                    <div class="section-header">
+                        <span class="section-tag">📱 Свяжись с нами</span>
+                        <h2 class="section-title">Наши <span class="gradient">контакты</span></h2>
+                    </div>
+                    
+                    <div class="contact-grid">
+                        <div class="contact-card glass">
+                            <div class="contact-icon">📧</div>
+                            <h3>Email</h3>
+                            <p><a href="mailto:openchatsia@gmail.com">openchatsia@gmail.com</a></p>
+                            <button class="btn-copy" onclick="copyToClipboard('openchatsia@gmail.com')">📋 Копировать</button>
+                        </div>
+                        
+                        <div class="contact-card glass">
+                            <div class="contact-icon">🔗</div>
+                            <h3>Ссылка на сайт</h3>
+                            <p id="siteUrl">opensia.ru</p>
+                            <button class="btn-copy" onclick="copyToClipboard(window.location.href)">📋 Копировать ссылку</button>
+                        </div>
+                        
+                        <div class="contact-card glass qr-card">
+                            <div class="contact-icon">📱</div>
+                            <h3>QR-код</h3>
+                            <div class="qr-container" id="qrContainer">
+                                <canvas id="qrCanvas"></canvas>
+                            </div>
+                            <p class="qr-note">Наведи камеру телефона</p>
+                            <button class="btn-copy" id="downloadQrBtn">💾 Скачать QR-код</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ФУТЕР -->
+            <footer class="footer">
+                <div class="container">
+                    <div class="footer-content">
+                        <div class="footer-brand">
+                            <div class="footer-logo">openSIA</div>
+                            <p>Нейросеть нового поколения</p>
+                        </div>
+                        <div class="footer-links">
+                            <a href="#">О проекте</a>
+                            <a href="mailto:openchatsia@gmail.com">Контакты</a>
+                            <a href="#">Политика</a>
+                        </div>
+                        <div class="footer-social">
+                            <a href="mailto:openchatsia@gmail.com" class="social-icon">📧</a>
+                            <a href="#" class="social-icon" id="showQRBtnFooter">📱</a>
+                            <a href="#" class="social-icon">💬</a>
+                        </div>
+                        <div class="footer-copyright">
+                            © 2026 openSIA. Создано с 💜 для будущего<br>
+                            <small>По вопросам: <a href="mailto:openchatsia@gmail.com">openchatsia@gmail.com</a></small>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Модальное окно для подписки -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-icon">🎉</div>
+            <h3>Готово!</h3>
+            <p>Мы отправим уведомление на <span id="modalEmail"></span> в день запуска</p>
+            <button class="modal-close-btn" id="closeModal">Отлично</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно для QR-кода (большое) -->
+    <div class="modal" id="qrModal">
+        <div class="modal-content qr-modal-content">
+            <div class="modal-icon">📱</div>
+            <h3>QR-код openSIA</h3>
+            <canvas id="qrCanvasBig"></canvas>
+            <p>Наведи камеру телефона</p>
+            <button class="btn-copy" id="downloadQrBigBtn">💾 Скачать QR-код</button>
+            <button class="modal-close-btn" id="closeQrModal">Закрыть</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs2-fix/qrcode.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
