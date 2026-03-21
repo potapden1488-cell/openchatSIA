@@ -1,117 +1,92 @@
-// ========== openSIA - ПРЕМИУМ ЛОГИКА ==========
-// Версия 3.0 ULTRA
-// Создано с ❤️ для открытого будущего
-
+// ========== openSIA - ПОЛНАЯ ЛОГИКА ==========
 (function() {
     'use strict';
 
+    // ========== КОНФИГУРАЦИЯ ==========
+    const API_URL = 'http://localhost:3000/api/chat';
+    
     // ========== ПЕРЕМЕННЫЕ ==========
     let currentTheme = 'dark';
     let creativity = 1.2;
-    let userName = 'Denis';
-    let userEmail = '';
-    let userStatus = 'online';
+    let maxTokens = 2048;
     let autoScroll = true;
     let showTime = true;
-    let soundEnabled = false;
-    let screenshotProtection = true;
-    let consoleProtection = true;
-    let messageCount = 0;
-    let sessionStart = Date.now();
-    let currentChat = [];
+    let isTyping = false;
     
-    // API URL (замени на свой после деплоя)
-    const API_URL = 'http://localhost:3000/api/chat';
-    
-    // DOM элементы
-    let messagesContainer, chatInput, chatSendBtn, chatTyping;
-    let userNameDisplay, profileNameInput, profileEmailInput, profileStatusSelect;
-    let creativitySlider, creativityValue;
-    let autoScrollCheck, showTimeCheck, soundCheck, screenshotCheck, consoleCheck;
+    // ========== DOM ЭЛЕМЕНТЫ ==========
+    let messagesContainer, chatInput, sendBtn, typingIndicator;
+    let creativitySlider, creativityValue, maxTokensSelect;
+    let autoScrollCheck, showTimeCheck;
     let themeBtns, themeOptions;
-    let notifyBtn, learnBtn, newChatBtn, clearChatBtn, settingsBtn, saveProfileBtn;
-    let qrCanvas, qrCanvasBig;
-    let toast;
+    let openChatBtn, learnBtn, saveSettingsBtn, resetSettingsBtn;
+    let showQRBtn, closeQrModal, qrModal, downloadQrBigBtn;
+    let sidebar, sidebarToggle;
     
     // ========== ИНИЦИАЛИЗАЦИЯ ==========
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('%c🚀 openSIA PREMIUM ULTRA ЗАПУСКАЕТСЯ...', 'color: #8774E1; font-size: 16px; font-weight: bold;');
-        console.log('%c💜 Создатель: Denchic | Команда: open Intelligent', 'color: #FF6B6B; font-size: 14px;');
+        console.log('%c🚀 openSIA PREMIUM ЗАПУЩЕНА!', 'color: #8774E1; font-size: 18px; font-weight: bold;');
         
         initElements();
         initPreloader();
         initCanvas();
-        initTimer();
         initTheme();
         initChat();
-        initProfile();
         initSettings();
         initQRCode();
-        initNotifications();
-        loadSavedData();
+        initEvents();
+        loadSettings();
+        initCursor();
         initAnimations();
-        initScrollEvents();
         
-        console.log('%c🎉 openSIA PREMIUM ULTRA ГОТОВА!', 'color: #4ECDC4; font-size: 18px; font-weight: bold;');
+        console.log('%c✅ openSIA готова к работе!', 'color: #4ECDC4; font-size: 16px;');
     });
     
     // ========== ИНИЦИАЛИЗАЦИЯ ЭЛЕМЕНТОВ ==========
     function initElements() {
         messagesContainer = document.getElementById('chatMessages');
         chatInput = document.getElementById('chatInput');
-        chatSendBtn = document.getElementById('chatSendBtn');
-        chatTyping = document.getElementById('chatTyping');
+        sendBtn = document.getElementById('chatSendBtn');
+        typingIndicator = document.getElementById('chatTyping');
         
-        userNameDisplay = document.getElementById('userNameDisplay');
-        profileNameInput = document.getElementById('profileName');
-        profileEmailInput = document.getElementById('profileEmail');
-        profileStatusSelect = document.getElementById('profileStatus');
-        
-        creativitySlider = document.getElementById('globalCreativity');
+        creativitySlider = document.getElementById('creativitySlider');
         creativityValue = document.getElementById('creativityValue');
+        maxTokensSelect = document.getElementById('maxTokens');
         
-        autoScrollCheck = document.getElementById('autoScrollChat');
-        showTimeCheck = document.getElementById('showTimeChat');
-        soundCheck = document.getElementById('notifications');
-        screenshotCheck = document.getElementById('screenshotProtection');
-        consoleCheck = document.getElementById('consoleProtection');
+        autoScrollCheck = document.getElementById('autoScroll');
+        showTimeCheck = document.getElementById('showTime');
         
         themeBtns = document.querySelectorAll('.theme-btn');
         themeOptions = document.querySelectorAll('.theme-option');
         
-        notifyBtn = document.getElementById('notifyBtn');
+        openChatBtn = document.getElementById('openChatBtn');
         learnBtn = document.getElementById('learnBtn');
-        newChatBtn = document.getElementById('newChatBtn');
-        clearChatBtn = document.getElementById('clearChat');
-        settingsBtn = document.getElementById('settingsBtn');
-        saveProfileBtn = document.getElementById('saveProfileBtn');
+        saveSettingsBtn = document.getElementById('saveSettingsBtn');
+        resetSettingsBtn = document.getElementById('resetSettingsBtn');
         
-        qrCanvas = document.getElementById('qrCanvas');
-        qrCanvasBig = document.getElementById('qrCanvasBig');
+        showQRBtn = document.getElementById('showQRBtn');
+        closeQrModal = document.getElementById('closeQrModal');
+        qrModal = document.getElementById('qrModal');
+        downloadQrBigBtn = document.getElementById('downloadQrBigBtn');
         
-        toast = document.getElementById('toast');
+        sidebar = document.getElementById('sidebar');
     }
     
     // ========== ПРЕЛОАДЕР ==========
     function initPreloader() {
         const preloader = document.getElementById('preloader');
         if (!preloader) return;
-        
         window.addEventListener('load', () => {
             setTimeout(() => {
                 preloader.style.opacity = '0';
-                setTimeout(() => {
-                    preloader.style.display = 'none';
-                }, 500);
+                setTimeout(() => preloader.style.display = 'none', 500);
             }, 1500);
         });
     }
     
-    // ========== 3D КАНВАС С ЧАСТИЦАМИ ==========
+    // ========== 3D КАНВАС ==========
     function initCanvas() {
         const canvas = document.getElementById('bgCanvas');
         if (!canvas) return;
-        
         const ctx = canvas.getContext('2d');
         let width, height;
         let particles = [];
@@ -133,31 +108,25 @@
                 this.size = Math.random() * 3 + 1;
                 this.color = `rgba(135, 116, 225, ${Math.random() * 0.4 + 0.1})`;
             }
-            
             update() {
                 this.x += this.vx;
                 this.y += this.vy;
-                
                 const dx = mouseX - this.x;
                 const dy = mouseY - this.y;
                 const dist = Math.sqrt(dx * dx + dy * dy);
-                
                 if (dist < 120) {
                     const force = (120 - dist) / 800;
                     this.vx += dx * force;
                     this.vy += dy * force;
                 }
-                
                 if (this.x < 0 || this.x > width) this.vx *= -0.9;
                 if (this.y < 0 || this.y > height) this.vy *= -0.9;
-                
                 const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
                 if (speed > 1.5) {
                     this.vx = (this.vx / speed) * 1.5;
                     this.vy = (this.vy / speed) * 1.5;
                 }
             }
-            
             draw() {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -168,9 +137,7 @@
         
         function initParticles() {
             particles = [];
-            for (let i = 0; i < 150; i++) {
-                particles.push(new Particle());
-            }
+            for (let i = 0; i < 150; i++) particles.push(new Particle());
         }
         
         function drawConnections() {
@@ -179,7 +146,6 @@
                     const dx = particles[i].x - particles[j].x;
                     const dy = particles[i].y - particles[j].y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
-                    
                     if (dist < 100) {
                         ctx.beginPath();
                         ctx.moveTo(particles[i].x, particles[i].y);
@@ -194,71 +160,15 @@
         function animate() {
             ctx.clearRect(0, 0, width, height);
             drawConnections();
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
+            particles.forEach(p => { p.update(); p.draw(); });
             requestAnimationFrame(animate);
         }
         
-        window.addEventListener('resize', () => {
-            resize();
-            initParticles();
-        });
-        
-        window.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
-        
+        window.addEventListener('resize', () => { resize(); initParticles(); });
+        window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
         resize();
         initParticles();
         animate();
-    }
-    
-    // ========== ТАЙМЕР 7 ДНЕЙ ==========
-    function initTimer() {
-        const launchDate = new Date();
-        launchDate.setDate(launchDate.getDate() + 7);
-        launchDate.setHours(0, 0, 0, 0);
-        
-        function updateTimer() {
-            const now = new Date();
-            const diff = launchDate - now;
-            
-            if (diff <= 0) {
-                document.querySelectorAll('.timer-number, .timer-unit-number').forEach(el => {
-                    if (el) el.textContent = '00';
-                });
-                return;
-            }
-            
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            
-            const daysEl = document.getElementById('days');
-            const hoursEl = document.getElementById('hours');
-            const minutesEl = document.getElementById('minutes');
-            const secondsEl = document.getElementById('seconds');
-            const bigDays = document.getElementById('bigDays');
-            const bigHours = document.getElementById('bigHours');
-            const bigMinutes = document.getElementById('bigMinutes');
-            const bigSeconds = document.getElementById('bigSeconds');
-            
-            if (daysEl) daysEl.textContent = String(days).padStart(2, '0');
-            if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
-            if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
-            if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
-            if (bigDays) bigDays.textContent = String(days).padStart(2, '0');
-            if (bigHours) bigHours.textContent = String(hours).padStart(2, '0');
-            if (bigMinutes) bigMinutes.textContent = String(minutes).padStart(2, '0');
-            if (bigSeconds) bigSeconds.textContent = String(seconds).padStart(2, '0');
-        }
-        
-        updateTimer();
-        setInterval(updateTimer, 1000);
     }
     
     // ========== ТЕМЫ ==========
@@ -282,33 +192,23 @@
         
         const allThemeBtns = [...themeBtns, ...themeOptions];
         allThemeBtns.forEach(btn => {
-            if (btn.dataset.theme === theme) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
+            if (btn.dataset.theme === theme) btn.classList.add('active');
+            else btn.classList.remove('active');
         });
         
         showToast(`🎨 Тема "${getThemeName(theme)}" применена`);
     }
     
     function getThemeName(theme) {
-        const names = {
-            dark: 'Тёмная',
-            light: 'Светлая',
-            purple: 'Фиолетовая',
-            ocean: 'Океан',
-            cosmic: 'Космос',
-            forest: 'Лесная'
-        };
+        const names = { dark: 'Тёмная', light: 'Светлая', purple: 'Фиолетовая', ocean: 'Океан', cosmic: 'Космос', forest: 'Лесная' };
         return names[theme] || theme;
     }
     
     // ========== ЧАТ ==========
     function initChat() {
-        if (!chatSendBtn || !chatInput) return;
+        if (!sendBtn || !chatInput) return;
         
-        chatSendBtn.addEventListener('click', sendMessage);
+        sendBtn.addEventListener('click', sendMessage);
         chatInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -320,18 +220,42 @@
         setInterval(updateChatTime, 1000);
     }
     
-    function sendMessage() {
+    async function sendMessage() {
         const text = chatInput.value.trim();
         if (!text) return;
         
         addMessage(text, 'user');
         chatInput.value = '';
+        autoResize();
         
         showTyping(true);
         
-        setTimeout(() => {
-            simulateBotResponse(text);
-        }, 1000 + Math.random() * 1000);
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: "deepseek/deepseek-chat",
+                    messages: [
+                        { role: "system", content: "Ты openSIA, дружелюбный помощник. Отвечай кратко и с эмодзи 😊" },
+                        { role: "user", content: text }
+                    ],
+                    temperature: creativity,
+                    max_tokens: maxTokens
+                })
+            });
+            
+            const data = await response.json();
+            const botReply = data.choices?.[0]?.message?.content || "Извини, я не понял. Попробуй ещё раз 😊";
+            
+            showTyping(false);
+            addMessage(botReply, 'bot');
+            
+        } catch (error) {
+            console.error('Ошибка:', error);
+            showTyping(false);
+            addMessage('❌ Ошибка подключения к серверу. Проверь, запущен ли прокси-сервер.', 'bot');
+        }
     }
     
     function addMessage(text, sender) {
@@ -339,7 +263,7 @@
         messageDiv.className = `chat-message ${sender}`;
         
         const avatar = sender === 'user' ? '👤' : '🤖';
-        const name = sender === 'user' ? userName : 'openSIA';
+        const name = sender === 'user' ? 'Вы' : 'openSIA';
         const time = showTime ? `<div class="chat-time">${getCurrentTime()}</div>` : '';
         
         messageDiv.innerHTML = `
@@ -353,121 +277,42 @@
         
         messagesContainer.appendChild(messageDiv);
         if (autoScroll) scrollToBottom();
-        
-        if (sender === 'user') {
-            messageCount++;
-            updateStats();
-        }
-        
-        if (soundEnabled && sender === 'bot') {
-            playSound();
-        }
-    }
-    
-    function simulateBotResponse(userMessage) {
-        showTyping(false);
-        
-        const responses = [
-            "Интересно! Расскажи подробнее 😊",
-            "Я понял. А что ты думаешь об этом?",
-            "Отличный вопрос! Давай подумаем вместе 🤔",
-            "Вот это да! Я впечатлён! 😮",
-            "Спасибо, что поделился! 👍",
-            "Хм, над этим нужно подумать...",
-            "Конечно! Сейчас всё объясню: ...",
-            "Прикольно! А ещё что-нибудь расскажешь? 😄",
-            "Это звучит здорово! ✨",
-            "Я запомню это! 💜"
-        ];
-        
-        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-        addMessage(randomResponse, 'bot');
     }
     
     function showTyping(show) {
-        if (!chatTyping) return;
+        if (!typingIndicator) return;
         if (show) {
-            chatTyping.classList.add('active');
+            typingIndicator.classList.add('active');
             if (autoScroll) scrollToBottom();
         } else {
-            chatTyping.classList.remove('active');
+            typingIndicator.classList.remove('active');
         }
     }
     
     function scrollToBottom() {
-        if (messagesContainer) {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
+        if (messagesContainer) messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+    
+    function autoResize() {
+        chatInput.style.height = 'auto';
+        chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
     }
     
     function updateChatTime() {
         const timeElements = document.querySelectorAll('.chat-time');
-        if (showTime) {
-            timeElements.forEach(el => {
-                el.style.display = 'block';
-            });
-        } else {
-            timeElements.forEach(el => {
-                el.style.display = 'none';
-            });
-        }
+        timeElements.forEach(el => {
+            el.style.display = showTime ? 'block' : 'none';
+        });
     }
     
     function getCurrentTime() {
-        const now = new Date();
-        return now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+        return new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
     }
     
     function escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
-    }
-    
-    function playSound() {
-        try {
-            const audio = new Audio('https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3');
-            audio.volume = 0.3;
-            audio.play().catch(e => console.log('Sound error:', e));
-        } catch(e) {}
-    }
-    
-    // ========== ПРОФИЛЬ ==========
-    function initProfile() {
-        if (saveProfileBtn) {
-            saveProfileBtn.addEventListener('click', saveProfile);
-        }
-        
-        if (profileStatusSelect) {
-            profileStatusSelect.addEventListener('change', updateStatusDisplay);
-        }
-    }
-    
-    function saveProfile() {
-        if (profileNameInput) userName = profileNameInput.value;
-        if (profileEmailInput) userEmail = profileEmailInput.value;
-        if (profileStatusSelect) userStatus = profileStatusSelect.value;
-        
-        if (userNameDisplay) userNameDisplay.textContent = userName;
-        
-        localStorage.setItem('userName', userName);
-        localStorage.setItem('userEmail', userEmail);
-        localStorage.setItem('userStatus', userStatus);
-        
-        updateStatusDisplay();
-        showToast('✅ Профиль сохранён!');
-    }
-    
-    function updateStatusDisplay() {
-        const statusText = document.querySelector('.user-status');
-        if (!statusText) return;
-        
-        const statusMap = {
-            online: '🌟 В сети',
-            away: '🌙 Отошёл',
-            busy: '🔴 Не беспокоить'
-        };
-        statusText.textContent = statusMap[userStatus] || '🌟 В сети';
     }
     
     // ========== НАСТРОЙКИ ==========
@@ -477,6 +322,13 @@
                 creativity = parseFloat(creativitySlider.value);
                 creativityValue.textContent = creativity.toFixed(1);
                 localStorage.setItem('creativity', creativity);
+            });
+        }
+        
+        if (maxTokensSelect) {
+            maxTokensSelect.addEventListener('change', () => {
+                maxTokens = parseInt(maxTokensSelect.value);
+                localStorage.setItem('maxTokens', maxTokens);
             });
         }
         
@@ -495,37 +347,9 @@
             });
         }
         
-        if (soundCheck) {
-            soundCheck.addEventListener('change', () => {
-                soundEnabled = soundCheck.checked;
-                localStorage.setItem('soundEnabled', soundEnabled);
-            });
-        }
-        
-        if (screenshotCheck) {
-            screenshotCheck.addEventListener('change', () => {
-                screenshotProtection = screenshotCheck.checked;
-                localStorage.setItem('screenshotProtection', screenshotProtection);
-            });
-        }
-        
-        if (consoleCheck) {
-            consoleCheck.addEventListener('change', () => {
-                consoleProtection = consoleCheck.checked;
-                localStorage.setItem('consoleProtection', consoleProtection);
-                if (consoleProtection) enableConsoleProtection();
-            });
-        }
-        
-        if (notifyBtn) {
-            notifyBtn.addEventListener('click', () => {
-                const email = prompt('Введи email — мы напомним о запуске:');
-                if (email && email.includes('@')) {
-                    showToast(`✅ Уведомление отправлено на ${email}`);
-                    saveSubscriber(email);
-                } else if (email) {
-                    showToast('❌ Неверный email', 'error');
-                }
+        if (openChatBtn) {
+            openChatBtn.addEventListener('click', () => {
+                document.getElementById('chat')?.scrollIntoView({ behavior: 'smooth' });
             });
         }
         
@@ -535,46 +359,33 @@
             });
         }
         
-        if (newChatBtn) {
-            newChatBtn.addEventListener('click', () => {
-                messagesContainer.innerHTML = '';
-                addMessage('Привет! Я openSIA — твоя нейросеть. Чем могу помочь? 😊', 'bot');
-                showToast('✨ Новый чат создан!');
-            });
-        }
-        
-        if (clearChatBtn) {
-            clearChatBtn.addEventListener('click', () => {
-                if (confirm('Очистить всю историю чата?')) {
-                    messagesContainer.innerHTML = '';
-                    addMessage('Привет! Я openSIA — твоя нейросеть. Чем могу помочь? 😊', 'bot');
-                    showToast('🧹 История очищена!');
-                }
-            });
-        }
-        
-        if (settingsBtn) {
-            settingsBtn.addEventListener('click', () => {
-                const settingsModal = document.getElementById('settingsModal');
-                if (settingsModal) settingsModal.classList.add('active');
-            });
-        }
-        
-        const closeSettings = document.getElementById('closeSettings');
-        if (closeSettings) {
-            closeSettings.addEventListener('click', () => {
-                const settingsModal = document.getElementById('settingsModal');
-                if (settingsModal) settingsModal.classList.remove('active');
-            });
-        }
-        
-        const saveSettingsBtn = document.getElementById('saveSettingsBtn');
         if (saveSettingsBtn) {
             saveSettingsBtn.addEventListener('click', () => {
-                saveProfile();
-                showToast('💾 Все настройки сохранены!');
-                const settingsModal = document.getElementById('settingsModal');
-                if (settingsModal) settingsModal.classList.remove('active');
+                localStorage.setItem('creativity', creativity);
+                localStorage.setItem('maxTokens', maxTokens);
+                localStorage.setItem('autoScroll', autoScroll);
+                localStorage.setItem('showTime', showTime);
+                showToast('💾 Настройки сохранены!');
+            });
+        }
+        
+        if (resetSettingsBtn) {
+            resetSettingsBtn.addEventListener('click', () => {
+                creativity = 1.2;
+                maxTokens = 2048;
+                autoScroll = true;
+                showTime = true;
+                if (creativitySlider) creativitySlider.value = creativity;
+                if (creativityValue) creativityValue.textContent = creativity.toFixed(1);
+                if (maxTokensSelect) maxTokensSelect.value = maxTokens;
+                if (autoScrollCheck) autoScrollCheck.checked = autoScroll;
+                if (showTimeCheck) showTimeCheck.checked = showTime;
+                localStorage.removeItem('creativity');
+                localStorage.removeItem('maxTokens');
+                localStorage.removeItem('autoScroll');
+                localStorage.removeItem('showTime');
+                showToast('🔄 Настройки сброшены!');
+                updateChatTime();
             });
         }
     }
@@ -583,38 +394,20 @@
     function initQRCode() {
         const currentUrl = window.location.href;
         
-        if (qrCanvas && typeof QRCode !== 'undefined') {
-            new QRCode(qrCanvas, {
-                text: currentUrl,
-                width: 150,
-                height: 150,
-                colorDark: '#8774E1',
-                colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.H
-            });
-        }
-        
-        if (qrCanvasBig) {
-            new QRCode(qrCanvasBig, {
-                text: currentUrl,
-                width: 250,
-                height: 250,
-                colorDark: '#8774E1',
-                colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.H
-            });
-        }
-        
-        const showQRBtns = document.querySelectorAll('#showQRBtn, #showQRBtnFooter');
-        const qrModal = document.getElementById('qrModal');
-        const closeQrModal = document.getElementById('closeQrModal');
-        
-        showQRBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
+        if (showQRBtn) {
+            showQRBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 if (qrModal) qrModal.classList.add('active');
+                setTimeout(() => {
+                    if (typeof QRCode !== 'undefined' && document.getElementById('qrCanvasBig')) {
+                        new QRCode(document.getElementById('qrCanvasBig'), {
+                            text: currentUrl, width: 250, height: 250,
+                            colorDark: '#8774E1', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H
+                        });
+                    }
+                }, 100);
             });
-        });
+        }
         
         if (closeQrModal) {
             closeQrModal.addEventListener('click', () => {
@@ -622,10 +415,9 @@
             });
         }
         
-        const downloadBtns = document.querySelectorAll('#downloadQrBtn, #downloadQrBigBtn');
-        downloadBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const canvas = btn.id === 'downloadQrBigBtn' ? qrCanvasBig : qrCanvas;
+        if (downloadQrBigBtn) {
+            downloadQrBigBtn.addEventListener('click', () => {
+                const canvas = document.getElementById('qrCanvasBig');
                 if (canvas) {
                     const link = document.createElement('a');
                     link.download = 'opensia-qr.png';
@@ -634,54 +426,29 @@
                     showToast('📱 QR-код скачан!');
                 }
             });
+        }
+        
+        window.addEventListener('click', (e) => {
+            if (e.target === qrModal) qrModal.classList.remove('active');
         });
     }
     
-    // ========== СТАТИСТИКА ==========
-    function updateStats() {
-        const messageCountEl = document.getElementById('messageCount');
-        const tokenCountEl = document.getElementById('tokenCount');
-        const sessionTimeEl = document.getElementById('sessionTime');
-        const emotionCountEl = document.getElementById('emotionCount');
-        
-        if (messageCountEl) messageCountEl.textContent = messageCount;
-        if (tokenCountEl) tokenCountEl.textContent = Math.floor(messageCount * 45);
-        if (sessionTimeEl) {
-            const seconds = Math.floor((Date.now() - sessionStart) / 1000);
-            const minutes = Math.floor(seconds / 60);
-            const hours = Math.floor(minutes / 60);
-            sessionTimeEl.textContent = `${hours.toString().padStart(2, '0')}:${(minutes % 60).toString().padStart(2, '0')}`;
-        }
-        if (emotionCountEl) emotionCountEl.textContent = Math.floor(messageCount * 0.7);
-    }
-    
-    // ========== ЗАГРУЗКА/СОХРАНЕНИЕ ==========
-    function loadSavedData() {
-        const savedName = localStorage.getItem('userName');
-        if (savedName) {
-            userName = savedName;
-            if (profileNameInput) profileNameInput.value = userName;
-            if (userNameDisplay) userNameDisplay.textContent = userName;
-        }
-        
-        const savedEmail = localStorage.getItem('userEmail');
-        if (savedEmail) {
-            userEmail = savedEmail;
-            if (profileEmailInput) profileEmailInput.value = userEmail;
-        }
-        
-        const savedStatus = localStorage.getItem('userStatus');
-        if (savedStatus) {
-            userStatus = savedStatus;
-            if (profileStatusSelect) profileStatusSelect.value = userStatus;
-            updateStatusDisplay();
-        }
+    // ========== ЗАГРУЗКА НАСТРОЕК ==========
+    function loadSettings() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) applyTheme(savedTheme);
         
         const savedCreativity = localStorage.getItem('creativity');
         if (savedCreativity && creativitySlider) {
             creativity = parseFloat(savedCreativity);
             creativitySlider.value = creativity;
             if (creativityValue) creativityValue.textContent = creativity.toFixed(1);
+        }
+        
+        const savedMaxTokens = localStorage.getItem('maxTokens');
+        if (savedMaxTokens && maxTokensSelect) {
+            maxTokens = parseInt(savedMaxTokens);
+            maxTokensSelect.value = maxTokens;
         }
         
         const savedAutoScroll = localStorage.getItem('autoScroll');
@@ -696,105 +463,86 @@
             showTimeCheck.checked = showTime;
             updateChatTime();
         }
-        
-        const savedSound = localStorage.getItem('soundEnabled');
-        if (savedSound !== null && soundCheck) {
-            soundEnabled = savedSound === 'true';
-            soundCheck.checked = soundEnabled;
-        }
-        
-        const savedScreenshot = localStorage.getItem('screenshotProtection');
-        if (savedScreenshot !== null && screenshotCheck) {
-            screenshotProtection = savedScreenshot === 'true';
-            screenshotCheck.checked = screenshotProtection;
-        }
-        
-        const savedConsole = localStorage.getItem('consoleProtection');
-        if (savedConsole !== null && consoleCheck) {
-            consoleProtection = savedConsole === 'true';
-            consoleCheck.checked = consoleProtection;
-        }
-        
-        updateStats();
-        setInterval(updateStats, 1000);
     }
     
-    function saveSubscriber(email) {
-        let subscribers = JSON.parse(localStorage.getItem('subscribers') || '[]');
-        if (!subscribers.includes(email)) {
-            subscribers.push(email);
-            localStorage.setItem('subscribers', JSON.stringify(subscribers));
-            
-            const countEl = document.getElementById('subscriberCount');
-            if (countEl) countEl.textContent = subscribers.length;
-        }
-    }
-    
-    // ========== ЗАЩИТА ==========
-    function enableConsoleProtection() {
-        setInterval(() => {
-            const start = performance.now();
-            debugger;
-            const end = performance.now();
-            if (end - start > 100) {
-                document.body.innerHTML = '<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;font-family:monospace;z-index:99999;"><h1>⛔ ДОСТУП ЗАПРЕЩЕН</h1></div>';
+    // ========== СОБЫТИЯ ==========
+    function initEvents() {
+        if (sidebar) {
+            const menuToggle = document.querySelector('.chat-title');
+            if (menuToggle) {
+                menuToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('active');
+                });
             }
-        }, 1000);
+        }
+        
+        chatInput.addEventListener('input', autoResize);
+    }
+    
+    // ========== КАСТОМНЫЙ КУРСОР ==========
+    function initCursor() {
+        const cursor = document.querySelector('.cursor');
+        const follower = document.querySelector('.cursor-follower');
+        if (!cursor || !follower) return;
+        
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
+            follower.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
+        });
+        
+        document.querySelectorAll('a, button, .nav-item, .theme-btn, .theme-option').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(2)';
+                follower.style.transform = 'scale(1.5)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1)';
+                follower.style.transform = 'scale(1)';
+            });
+        });
     }
     
     // ========== АНИМАЦИИ ==========
     function initAnimations() {
-        const tiltElements = document.querySelectorAll('[data-tilt]');
-        tiltElements.forEach(el => {
-            if (typeof VanillaTilt !== 'undefined') {
-                VanillaTilt.init(el, {
-                    max: 15,
-                    speed: 400,
-                    glare: true,
-                    'max-glare': 0.5,
-                });
-            }
-        });
-        
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
                 }
             });
         }, { threshold: 0.1 });
         
-        document.querySelectorAll('.feature-item, .about-card, .settings-card, .contact-card').forEach(el => {
-            el.classList.add('fade-in-up');
+        document.querySelectorAll('.feature-item, .about-card, .settings-card, .contact-form-container').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease';
             observer.observe(el);
         });
     }
     
-    function initScrollEvents() {
-        window.addEventListener('scroll', () => {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const hero = document.querySelector('.hero');
-            if (hero) {
-                hero.style.transform = `translateY(${scrollTop * 0.3}px)`;
-            }
-        });
-    }
-    
     // ========== УВЕДОМЛЕНИЯ ==========
-    function showToast(message, type = 'success') {
-        if (!toast) return;
-        
-        toast.textContent = message;
+    function showToast(message) {
+        const toast = document.createElement('div');
         toast.className = 'toast';
-        if (type === 'error') toast.style.background = 'linear-gradient(135deg, #FF453A, #e74c3c)';
-        else toast.style.background = 'linear-gradient(135deg, var(--primary), var(--primary-dark))';
-        
-        toast.classList.add('show');
-        
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
+        toast.textContent = message;
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            z-index: 10001;
+            animation: fadeInUp 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: var(--shadow-neon);
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
     }
     
     // ========== КОПИРОВАНИЕ ==========
@@ -811,31 +559,4 @@
             showToast('✅ Скопировано!');
         });
     };
-    
-    // ========== ЗАЩИТА ОТ СКРИНШОТОВ ==========
-    if (screenshotProtection) {
-        document.addEventListener('keyup', (e) => {
-            if (e.key === 'PrintScreen') {
-                showToast('🔒 Скриншот заблокирован!', 'error');
-                return false;
-            }
-        });
-    }
-    
-    // ========== ИНИЦИАЛИЗАЦИЯ СООБЩЕНИЯ ==========
-    setTimeout(() => {
-        if (messagesContainer && messagesContainer.children.length === 0) {
-            addMessage('Привет! Я openSIA — твоя нейросеть. Чем могу помочь? 😊', 'bot');
-        }
-    }, 100);
-    
-    // ========== ОБНОВЛЕНИЕ ВРЕМЕНИ ==========
-    function updateCurrentTime() {
-        const timeEl = document.getElementById('currentTime');
-        if (timeEl) {
-            timeEl.textContent = getCurrentTime();
-        }
-    }
-    setInterval(updateCurrentTime, 1000);
-    updateCurrentTime();
 })();
