@@ -607,3 +607,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Добавляем глобальную функцию для копирования
 window.copyToClipboard = copyToClipboard;
+// ========== СЧЁТЧИК ПОДПИСЧИКОВ ==========
+function loadSubscriberCount() {
+    let count = localStorage.getItem('subscriberCount');
+    if (!count) {
+        count = 0;
+        localStorage.setItem('subscriberCount', count);
+    }
+    document.getElementById('subscriberCount').textContent = count;
+}
+
+function incrementSubscriberCount() {
+    let count = parseInt(localStorage.getItem('subscriberCount') || '0');
+    count++;
+    localStorage.setItem('subscriberCount', count);
+    document.getElementById('subscriberCount').textContent = count;
+}
+
+// Загружаем при старте
+document.addEventListener('DOMContentLoaded', loadSubscriberCount);
+
+// Когда кто-то подписывается — увеличиваем
+// (добавь в обработчик отправки формы)
