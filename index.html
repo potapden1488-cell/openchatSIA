@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>openSIA • Нейросеть будущего</title>
+    <title>openSIA • Нейросеть будущего — Скоро</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -19,6 +19,9 @@
         <div class="preloader-content">
             <div class="preloader-ring"></div>
             <div class="preloader-text">openSIA</div>
+            <div class="preloader-dots">
+                <span></span><span></span><span></span>
+            </div>
         </div>
     </div>
 
@@ -27,24 +30,20 @@
     <div class="cursor-follower"></div>
 
     <div class="app">
-        <!-- Сайдбар -->
+        <!-- Сайдбар навигации -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-logo">
                 <div class="logo-3d">
                     <span class="logo-icon">🧠</span>
                     <span class="logo-text">openSIA</span>
                 </div>
-                <div class="logo-badge">PREMIUM</div>
+                <div class="logo-badge">Скоро</div>
             </div>
             
             <nav class="sidebar-nav">
                 <a href="#home" class="nav-item active">
                     <div class="nav-icon">🏠</div>
                     <div class="nav-text">Главная</div>
-                </a>
-                <a href="#chat" class="nav-item">
-                    <div class="nav-icon">💬</div>
-                    <div class="nav-text">Чат</div>
                 </a>
                 <a href="#features" class="nav-item">
                     <div class="nav-icon">⚡</div>
@@ -54,9 +53,9 @@
                     <div class="nav-icon">🤖</div>
                     <div class="nav-text">О нас</div>
                 </a>
-                <a href="#settings" class="nav-item">
-                    <div class="nav-icon">⚙️</div>
-                    <div class="nav-text">Настройки</div>
+                <a href="#waitlist" class="nav-item">
+                    <div class="nav-icon">📧</div>
+                    <div class="nav-text">Ожидание</div>
                 </a>
             </nav>
             
@@ -66,23 +65,21 @@
                     <button class="theme-btn" data-theme="light">☀️</button>
                     <button class="theme-btn" data-theme="purple">💜</button>
                     <button class="theme-btn" data-theme="ocean">🌊</button>
-                    <button class="theme-btn" data-theme="cosmic">🌌</button>
-                    <button class="theme-btn" data-theme="forest">🌿</button>
                 </div>
                 <div class="social-links">
-                    <a href="mailto:openchatsia@gmail.com" class="social-link"><i class="fas fa-envelope"></i></a>
-                    <a href="#" class="social-link" id="showQRBtn"><i class="fas fa-qrcode"></i></a>
                     <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
                 </div>
             </div>
         </aside>
 
         <main class="main">
-            <!-- HERO -->
+            <!-- ГЛАВНЫЙ ЭКРАН С ТАЙМЕРОМ -->
             <section id="home" class="hero">
                 <div class="hero-content">
                     <div class="hero-badge">
-                        <span class="badge-pulse">🚀 НОВОЕ ПОКОЛЕНИЕ</span>
+                        <span class="badge-pulse">🚀 НОВАЯ ЭРА ИИ</span>
                     </div>
                     <h1 class="hero-title">
                         <span class="title-small">Нейросеть нового поколения</span>
@@ -93,12 +90,38 @@
                         помогает учиться и общается как человек.
                     </p>
                     
+                    <!-- ТАЙМЕР -->
+                    <div class="timer-container">
+                        <h3 class="timer-title">⚡ ДО ЗАПУСКА ОСТАЛОСЬ:</h3>
+                        <div class="timer" id="timer">
+                            <div class="timer-block">
+                                <div class="timer-number" id="days">00</div>
+                                <div class="timer-label">Дней</div>
+                            </div>
+                            <div class="timer-separator">:</div>
+                            <div class="timer-block">
+                                <div class="timer-number" id="hours">00</div>
+                                <div class="timer-label">Часов</div>
+                            </div>
+                            <div class="timer-separator">:</div>
+                            <div class="timer-block">
+                                <div class="timer-number" id="minutes">00</div>
+                                <div class="timer-label">Минут</div>
+                            </div>
+                            <div class="timer-separator">:</div>
+                            <div class="timer-block">
+                                <div class="timer-number" id="seconds">00</div>
+                                <div class="timer-label">Секунд</div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="hero-buttons">
-                        <button class="btn btn-primary" id="openChatBtn">
-                            <span>💬 Начать общение</span>
+                        <button class="btn btn-primary" id="scrollToWaitlist">
+                            <span>📧 Получить уведомление</span>
                         </button>
-                        <button class="btn btn-outline" id="learnBtn">
-                            <span>🤔 Что это?</span>
+                        <button class="btn btn-outline" id="scrollToFeatures">
+                            <span>✨ Узнать больше</span>
                         </button>
                     </div>
                 </div>
@@ -109,193 +132,140 @@
                 </div>
             </section>
 
-            <!-- ЧАТ -->
-            <section id="chat" class="chat-section">
-                <div class="container">
-                    <div class="section-header">
-                        <span class="section-tag">💬 Живое общение</span>
-                        <h2 class="section-title">Поговори с <span class="gradient">openSIA</span></h2>
-                    </div>
-                    
-                    <div class="chat-container glass">
-                        <div class="chat-messages" id="chatMessages">
-                            <div class="chat-message bot">
-                                <div class="chat-avatar">🤖</div>
-                                <div class="chat-bubble">
-                                    <div class="chat-name">openSIA</div>
-                                    <div class="chat-text">Привет! Я openSIA — твоя нейросеть. Спроси меня о чём угодно! 😊</div>
-                                    <div class="chat-time"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="chat-input-area">
-                            <textarea id="chatInput" placeholder="Напиши сообщение..." rows="1"></textarea>
-                            <button id="chatSendBtn" class="chat-send-btn">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                        </div>
-                        <div class="chat-typing" id="chatTyping">
-                            <span></span><span></span><span></span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ВОЗМОЖНОСТИ -->
+            <!-- ВОЗМОЖНОСТИ НЕЙРОСЕТИ -->
             <section id="features" class="features">
                 <div class="container">
                     <div class="section-header">
-                        <span class="section-tag">⚡ Мега-возможности</span>
-                        <h2 class="section-title">Что умеет <span class="gradient">openSIA</span></h2>
+                        <span class="section-tag">⚡ Что умеет</span>
+                        <h2 class="section-title">Возможности <span class="gradient">openSIA</span></h2>
+                        <p class="section-desc">Нейросеть, которая изменит твоё представление об ИИ</p>
                     </div>
+                    
                     <div class="features-grid">
                         <div class="feature-item">
                             <div class="feature-icon">💬</div>
                             <h3>Живое общение</h3>
-                            <p>Шутит, поддерживает, понимает контекст.</p>
-                            <div class="feature-badge">🔥 Популярно</div>
+                            <p>Понимает эмоции, шутит, поддерживает — как лучший друг</p>
+                            <div class="feature-badge">🔥 Эмоциональный интеллект</div>
                         </div>
                         <div class="feature-item">
                             <div class="feature-icon">🔍</div>
                             <h3>Умный поиск</h3>
-                            <p>Яндекс, Google, Википедия — всё в одном окне.</p>
-                            <div class="feature-badge">⚡ 0.3 сек</div>
+                            <p>Яндекс, Google, Википедия — всё в одном окне</p>
+                            <div class="feature-badge">⚡ Мгновенные ответы</div>
                         </div>
                         <div class="feature-item">
                             <div class="feature-icon">💻</div>
                             <h3>Помощь в коде</h3>
-                            <p>Пишет на Python, JS, C++. Объясняет, исправляет.</p>
+                            <p>Пишет на Python, JS, C++. Объясняет, исправляет ошибки</p>
                             <div class="feature-badge">🧑‍💻 50+ языков</div>
                         </div>
                         <div class="feature-item">
                             <div class="feature-icon">🎨</div>
-                            <h3>Генерация картинок</h3>
-                            <p>Опиши словами — получи шедевр.</p>
-                            <div class="feature-badge">🎨 4K качество</div>
+                            <h3>Генерация изображений</h3>
+                            <p>Опиши словами — получи шедевр в 4K качестве</p>
+                            <div class="feature-badge">🎨 AI Art</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">🌐</div>
+                            <h3>50+ языков мира</h3>
+                            <p>Перевод, изучение, практика с носителями</p>
+                            <div class="feature-badge">🌍 Без границ</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">🎵</div>
+                            <h3>Музыка и звук</h3>
+                            <p>Создаёт треки, озвучивает текст, ремиксы</p>
+                            <div class="feature-badge">🎧 Студия в кармане</div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- О НАС -->
+            <!-- О НЕЙРОСЕТИ -->
             <section id="about" class="about">
                 <div class="container">
                     <div class="section-header">
                         <span class="section-tag">🤖 Простыми словами</span>
-                        <h2 class="section-title">Что такое <span class="gradient">нейросеть</span>?</h2>
+                        <h2 class="section-title">Что такое <span class="gradient">openSIA</span>?</h2>
                     </div>
+                    
                     <div class="about-grid">
                         <div class="about-card glass">
                             <div class="card-icon">🧠</div>
                             <h3>Программа, которая учится</h3>
-                            <p>Анализирует миллионы примеров и понимает закономерности.</p>
+                            <p>Анализирует миллионы примеров и понимает закономерности как человек</p>
                         </div>
                         <div class="about-card glass">
                             <div class="card-icon">💬</div>
                             <h3>Понимает эмоции</h3>
-                            <p>Чувствует настроение по тексту и отвечает с душой.</p>
+                            <p>Чувствует настроение по тексту и отвечает с душой и эмпатией</p>
                         </div>
                         <div class="about-card glass">
                             <div class="card-icon">⚡</div>
                             <h3>Работает мгновенно</h3>
-                            <p>Ответ приходит за доли секунды.</p>
+                            <p>Ответ приходит за доли секунды. Без задержек и ожидания</p>
+                        </div>
+                        <div class="about-card glass">
+                            <div class="card-icon">🔒</div>
+                            <h3>Безопасно и приватно</h3>
+                            <p>Твои данные под защитой. Никто не узнает о твоих диалогах</p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- НАСТРОЙКИ -->
-            <section id="settings" class="settings-section">
+            <!-- ФОРМА ПОДПИСКИ (WAITLIST) -->
+            <section id="waitlist" class="waitlist-section">
                 <div class="container">
                     <div class="section-header">
-                        <span class="section-tag">⚙️ Персонализация</span>
-                        <h2 class="section-title">Все <span class="gradient">настройки</span></h2>
+                        <span class="section-tag">📬 Будь первым</span>
+                        <h2 class="section-title">Получи <span class="gradient">доступ</span> первым</h2>
+                        <p class="section-desc">Оставь email и мы уведомим тебя о запуске openSIA</p>
                     </div>
                     
-                    <div class="settings-grid">
-                        <div class="settings-card glass">
-                            <h3><i class="fas fa-palette"></i> Тема</h3>
-                            <div class="theme-selector-full">
-                                <button class="theme-option" data-theme="dark">🌙</button>
-                                <button class="theme-option" data-theme="light">☀️</button>
-                                <button class="theme-option" data-theme="purple">💜</button>
-                                <button class="theme-option" data-theme="ocean">🌊</button>
-                                <button class="theme-option" data-theme="cosmic">🌌</button>
-                                <button class="theme-option" data-theme="forest">🌿</button>
-                            </div>
-                        </div>
+                    <div class="waitlist-container glass">
+                        <div class="waitlist-icon">🚀</div>
+                        <h3>Ранний доступ</h3>
+                        <p>Подпишись и получи бонус — 7 дней бесплатного Premium доступа!</p>
                         
-                        <div class="settings-card glass">
-                            <h3><i class="fas fa-robot"></i> Нейросеть</h3>
-                            <div class="setting-slider">
-                                <label>Креативность</label>
-                                <input type="range" id="creativitySlider" min="0" max="2" step="0.1" value="1.2">
-                                <span id="creativityValue">1.2</span>
-                            </div>
-                        </div>
-                        
-                        <div class="settings-card glass">
-                            <h3><i class="fas fa-comment"></i> Чат</h3>
-                            <div class="setting-switch">
-                                <span>Автопрокрутка</span>
-                                <label class="ios-switch">
-                                    <input type="checkbox" id="autoScroll" checked>
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                            <div class="setting-switch">
-                                <span>Показывать время</span>
-                                <label class="ios-switch">
-                                    <input type="checkbox" id="showTime" checked>
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="settings-actions">
-                        <button class="action-button primary" id="saveSettingsBtn">💾 Сохранить настройки</button>
-                        <button class="action-button" id="resetSettingsBtn">🔄 Сбросить</button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- КОНТАКТЫ С FORMSPREE (ТВОЙ ID ВСТАВЛЕН!) -->
-            <section id="contact" class="contact-section">
-                <div class="container">
-                    <div class="section-header">
-                        <span class="section-tag">📬 Свяжись с нами</span>
-                        <h2 class="section-title">Напиши <span class="gradient">нам</span></h2>
-                        <p class="section-desc">Мы ответим в ближайшее время! 😊</p>
-                    </div>
-                    
-                    <div class="contact-form-container glass">
                         <form 
                             action="https://formspree.io/f/mpqyelaz" 
                             method="POST"
-                            id="contactForm"
+                            id="waitlistForm"
+                            class="waitlist-form"
                         >
                             <div class="form-group">
-                                <label><i class="fas fa-user"></i> Твоё имя</label>
-                                <input type="text" name="name" placeholder="Как к тебе обращаться?" required>
+                                <input type="text" name="name" placeholder="Твоё имя" required>
                             </div>
-                            
                             <div class="form-group">
-                                <label><i class="fas fa-envelope"></i> Email</label>
-                                <input type="email" name="email" placeholder="example@mail.com" required>
+                                <input type="email" name="email" placeholder="Email" required>
                             </div>
-                            
-                            <div class="form-group">
-                                <label><i class="fas fa-comment"></i> Сообщение</label>
-                                <textarea name="message" rows="5" placeholder="Напиши нам что-нибудь..." required></textarea>
-                            </div>
-                            
-                            <button type="submit" class="btn btn-primary" id="formSubmitBtn">
-                                <span>✉️ Отправить</span>
+                            <input type="hidden" name="_subject" value="Новая подписка на openSIA">
+                            <input type="hidden" name="_replyto" value="email">
+                            <button type="submit" class="btn btn-primary btn-full">
+                                <span>📧 Уведомить меня</span>
                             </button>
-                            
-                            <p class="form-note">Нажимая «Отправить», ты соглашаешься с политикой конфиденциальности.</p>
                         </form>
+                        
+                        <p class="waitlist-note">
+                            <i class="fas fa-lock"></i> Мы не передаём данные третьим лицам. Только уведомления о запуске.
+                        </p>
+                    </div>
+                    
+                    <div class="stats-row">
+                        <div class="stat-card glass">
+                            <div class="stat-number" id="waitlistCount">0</div>
+                            <div class="stat-label">Уже в списке ожидания</div>
+                        </div>
+                        <div class="stat-card glass">
+                            <div class="stat-number" id="daysLeft">0</div>
+                            <div class="stat-label">Дней до запуска</div>
+                        </div>
+                        <div class="stat-card glass">
+                            <div class="stat-number">7</div>
+                            <div class="stat-label">Дней Premium бесплатно</div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -310,10 +280,12 @@
                         </div>
                         <div class="footer-links">
                             <a href="#">О проекте</a>
+                            <a href="#">Политика конфиденциальности</a>
                             <a href="mailto:openchatsia@gmail.com">Контакты</a>
                         </div>
                         <div class="footer-copyright">
-                            © 2026 openSIA. Создано с 💜 для будущего
+                            © 2026 openSIA. Создано с 💜 для будущего<br>
+                            <small>Скоро здесь появится нейросеть, которая изменит всё</small>
                         </div>
                     </div>
                 </div>
@@ -321,17 +293,6 @@
         </main>
     </div>
 
-    <div class="modal" id="qrModal">
-        <div class="modal-content">
-            <div class="modal-icon">📱</div>
-            <h3>QR-код openSIA</h3>
-            <canvas id="qrCanvasBig"></canvas>
-            <button class="btn-copy" id="downloadQrBigBtn">💾 Скачать</button>
-            <button class="modal-close-btn" id="closeQrModal">Закрыть</button>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs2-fix/qrcode.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
