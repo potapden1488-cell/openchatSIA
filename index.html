@@ -1,4 +1,25 @@
 <!DOCTYPE html>
+<script>
+// Защита от просмотра исходного кода
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'F12' || 
+        (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+        (e.ctrlKey && e.key === 'U')) {
+        e.preventDefault();
+        alert('🔒 Просмотр кода запрещён');
+        return false;
+    }
+});
+
+// Защита от правого клика
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    return false;
+});
+
+// Обфускация API ключа (хранится только на сервере)
+// Ключ в клиентском коде НЕ ХРАНИТСЯ!
+</script>
 <!-- Модальное окно регистрации (показывается первым) -->
 <div class="register-overlay" id="registerOverlay">
     <div class="register-card">
