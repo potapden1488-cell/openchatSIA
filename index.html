@@ -1,4 +1,162 @@
 <!DOCTYPE html>
+<!-- Модальное окно регистрации (показывается первым) -->
+<div class="register-overlay" id="registerOverlay">
+    <div class="register-card">
+        <div class="register-icon">🧠</div>
+        <h2>Добро пожаловать в openSIA</h2>
+        <p>Зарегистрируйся, чтобы начать общение</p>
+        
+        <form id="registerForm">
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="regName" placeholder="Твоё имя" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="regEmail" placeholder="Email">
+            </div>
+            <div class="row-inputs">
+                <div class="input-group half">
+                    <i class="fas fa-calendar"></i>
+                    <input type="number" id="regAge" placeholder="Возраст">
+                </div>
+                <div class="input-group half">
+                    <i class="fas fa-venus-mars"></i>
+                    <select id="regGender">
+                        <option value="">Пол</option>
+                        <option value="Мужской">Мужской</option>
+                        <option value="Женский">Женский</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="register-btn">
+                🚀 Начать общение
+            </button>
+        </form>
+        
+        <p class="register-note">🔒 Данные сохраняются только на твоём устройстве</p>
+    </div>
+</div>
+
+<style>
+.register-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.95);
+    backdrop-filter: blur(20px);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.5s;
+}
+.register-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+.register-card {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border: 2px solid #8774E1;
+    border-radius: 40px;
+    padding: 40px;
+    max-width: 450px;
+    width: 90%;
+    text-align: center;
+    animation: fadeInUp 0.5s;
+}
+.register-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+}
+.register-card h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: #8774E1;
+}
+.register-card p {
+    color: #aaa;
+    margin-bottom: 30px;
+}
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+.input-group i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8774E1;
+}
+.input-group input, .input-group select {
+    width: 100%;
+    padding: 14px 16px 14px 48px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid #333;
+    border-radius: 30px;
+    color: white;
+    font-size: 16px;
+}
+.register-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #8774E1, #6a5acd);
+    border: none;
+    border-radius: 40px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.register-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px #8774E1;
+}
+.register-note {
+    font-size: 11px;
+    color: #666;
+    margin-top: 20px;
+}
+</style>
+
+<script>
+// Регистрация
+const registerOverlay = document.getElementById('registerOverlay');
+
+// Проверяем, зарегистрирован ли пользователь
+if (localStorage.getItem('userRegistered') === 'true') {
+    registerOverlay.classList.add('hidden');
+} else {
+    registerOverlay.classList.remove('hidden');
+}
+
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('regName').value.trim();
+    if (!name) {
+        alert('Пожалуйста, введите имя');
+        return;
+    }
+    
+    // Сохраняем данные пользователя
+    localStorage.setItem('userRegistered', 'true');
+    localStorage.setItem('userName', name);
+    localStorage.setItem('userEmail', document.getElementById('regEmail').value);
+    localStorage.setItem('userAge', document.getElementById('regAge').value);
+    localStorage.setItem('userGender', document.getElementById('regGender').value);
+    
+    // Скрываем оверлей
+    registerOverlay.classList.add('hidden');
+    
+    // Инициализируем приложение
+    initApp();
+});
+</script>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
